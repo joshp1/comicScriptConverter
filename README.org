@@ -26,3 +26,9 @@ csxml -f fountain -i script.xml
 output:
 
 script.fountain
+
+## TODO
+
+ * TODO [ ] Rewrite the files to have better names
+ * TODO [ ] Add git milestones for versioning.
+ * TODO [ ] Rewrite the README  to look more professional.
