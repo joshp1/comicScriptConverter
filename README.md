@@ -1,5 +1,3 @@
-#+Title:Comic script converter
-
 # Comic Script Converter
 . I'm still in the prototyping stage I just wanted to get the git server up. and accedently made it public. So if you use this. It will change alot and the syntax will be a mess.
 
@@ -29,6 +27,6 @@ script.fountain
 
 ## TODO
 
- * [ ] Rewrite the files to have better names
- * [ ] Add git milestones for versioning.
+ - [ ] Rewrite the files to have better names
+ - [ ] Add git milestones for versioning.
  * [ ] Rewrite the README  to look more professional.
