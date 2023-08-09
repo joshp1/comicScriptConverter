@@ -29,6 +29,6 @@ script.fountain
 
 ## TODO
 
- * TODO [ ] Rewrite the files to have better names
- * TODO [ ] Add git milestones for versioning.
- * TODO [ ] Rewrite the README  to look more professional.
+ * [ ] Rewrite the files to have better names
+ * [ ] Add git milestones for versioning.
+ * [ ] Rewrite the README  to look more professional.
