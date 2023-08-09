@@ -29,4 +29,5 @@ script.fountain
 
  - [ ] Rewrite the files to have better names
  - [ ] Add git milestones for versioning.
- * [ ] Rewrite the README  to look more professional.
+ - [ ] Rewrite the README  to look more professional.
+ - [ ] mycomicmarkuplanguage.xml needs a shorter named and context cleaned up.
