@@ -1,5 +1,5 @@
 # Comic Script Converter
-. I'm still in the prototyping stage I just wanted to get the git server up. and accedently made it public. So if you use this. It will change alot and the syntax will be a mess.
+I'm still in the prototyping stage I just wanted to get the git server up. and accedently made it public. So if you use this. It will change alot and the syntax will be a mess.
 
 I use fountain to make comic scripts all the time but markdown isn't really my favorite mostly because you have to find a cheat sheet. Markup has the DTD which can also be used to validate the document. (I know it's it's main purporse)
 

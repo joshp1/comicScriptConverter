@@ -1,6 +1,8 @@
 import sys
 import xml.etree.ElementTree as ET
 
+# csc - comic script converter - Python script that converts csxml into fountain or html right now hopefully later more.
+
 def extract_text(element):
     return element.text.strip() if element is not None and element.text else ""
 
@@ -26,7 +28,7 @@ def convert_to_fountain(root, output_file):
                     if tag_name == "character":
                         name = element.get("name")
                         f.write("    {}\n   {}\n\n".format(name.upper(), text))
-                    elif tag_name == "narrator":
+                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
                         f.write("    {}\n".format(text))
                     elif tag_name == "action":
                         f.write("{}\n".format(text))
@@ -40,6 +42,30 @@ def convert_to_html(root, output_file):
         f.write ("<html><head></title>")
         f.write (extract_text(root.find("./title")) + "\n")
         f.write ("</titel></head><body>")
+        
+        # Copy the script above to edit later to HTML
+
+        for page in root.findall("./script/page"):
+            page_num = page.get("num")
+            f.write("INT. COMIC PAGE {}\n\n".format(page_num))
+
+            for panel in page.findall("./panel"):
+                panel_num = panel.get("num")
+                f.write("PANEL {}\n\n".format(panel_num))
+
+                for element in panel:
+                    tag_name = element.tag
+                    text = extract_text(element)
+                    
+                    if tag_name == "character":
+                        name = element.get("name")
+                        f.write("    {}\n   {}\n\n".format(name.upper(), text))
+                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                        f.write("    {}\n".format(text))
+                    elif tag_name == "action":
+                        f.write("{}\n".format(text))
+            f.write("\n")
+        f.write ("</body></html>")
     print ("HTML conversion durn")
 def main():
     if len(sys.argv) < 4:
