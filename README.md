@@ -36,3 +36,4 @@ Still need to clean this up and stop using it as a long. I'll b getting to the p
  - [ ] Add git milestones for versioning.
  - [ ] Rewrite the README  to look more professional.
  - [x] mycomicmarkuplanguage.xml needs a shorter named and context cleaned up.
+ - [ ] ccxmlc needs to be renamed to csxmlc
