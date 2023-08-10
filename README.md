@@ -25,9 +25,14 @@ output:
 
 script.fountain
 
+8/10-2023:
+cleaned up repository. and added the options.
+you can now run using .ccxmlc -i input.xml -o output.fountain -f fountain
+also --help or -h for a help menu.
+Still need to clean this up and stop using it as a long. I'll b getting to the point where I should of went public.
 ## TODO
 
- - [ ] Rewrite the files to have better names
+ - [x] Rewrite the files to have better names
  - [ ] Add git milestones for versioning.
  - [ ] Rewrite the README  to look more professional.
- - [ ] mycomicmarkuplanguage.xml needs a shorter named and context cleaned up.
+ - [x] mycomicmarkuplanguage.xml needs a shorter named and context cleaned up.
