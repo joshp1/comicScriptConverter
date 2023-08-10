@@ -1,4 +1,4 @@
-import sys
+import sys, getopt
 import xml.etree.ElementTree as ET
 
 # csc - comic script converter - Python script that converts csxml into fountain or html right now hopefully later more.
@@ -39,15 +39,15 @@ def convert_to_fountain(root, output_file):
 def convert_to_html(root, output_file):
     # Modify this function to generate HTML output
     with open(output_file, "w") as f:
-        f.write ("<html><head></title>")
+        f.write ("<html>\n\t<head>\n\t\t</title>\n\t\t\t")
         f.write (extract_text(root.find("./title")) + "\n")
-        f.write ("</titel></head><body>")
+        f.write ("\n\t\t</title>\n\t</head>\n\t<body>\n")
         
         # Copy the script above to edit later to HTML
 
         for page in root.findall("./script/page"):
             page_num = page.get("num")
-            f.write("INT. COMIC PAGE {}\n\n".format(page_num))
+            f.write("<h1>INT. COMIC PAGE {}</h1>\n".format(page_num))
 
             for panel in page.findall("./panel"):
                 panel_num = panel.get("num")
@@ -67,14 +67,42 @@ def convert_to_html(root, output_file):
             f.write("\n")
         f.write ("</body></html>")
     print ("HTML conversion durn")
+def help():
+    print("Usage: python script_name.py [options]")
+    print("Options:")
+    print("  -i, --input     Input XML file")
+    print("  -o, --output    Output file")
+    print("  -f, --format    Output format (html/fountain)")
+    print("  -l, --last_name Last name (optional) I need to erase this. you will never have a need for it. Just a old test left over.")
+    print("  -h, --help      Show this help message")
 def main():
-    if len(sys.argv) < 4:
-        print("Usage: python script_name.py input_file.xml output_file format (html/fountain)")
+    first_name = None
+    last_name = None
+    output_format = None
+    input_file = None
+    output_file = None
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "f:l:o:hi:", 
+                                   ["help", "format=", "output=", "input="])
+    except getopt.GetoptError as e:
+        print("Error:", e)
         return
     
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
-    output_format = sys.argv[3].lower()
+    for opt, arg in opts:
+        if opt in ("-h", '--help'):
+            help ()
+            return
+        if opt in ('-f', '--format'):
+            output_format = arg.lower()
+        elif opt in ('-o', '--output'):
+            output_file = arg
+        elif opt in ('-i', '--input'):
+            input_file = arg
+
+    if input_file is None or output_file is None or output_format is None:
+        print("Usage: python script_name.py -i input_file.xml -o output_file -f format (html/fountain)")
+        return
 
     tree = ET.parse(input_file)
     root = tree.getroot()

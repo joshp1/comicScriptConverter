@@ -1,0 +1,55 @@
+<comic>
+    <title>Test</title>
+    <author>JoshP1</author>
+    <email>joshp1@joshlucy.info</email>
+    <draft>Test</draft>
+    <date>8/10/2023</date>
+    <script>
+        <page num='1'>
+            <panel num='1'>
+                <character name="Jon">
+                    Hey man.
+                </character>
+                <character name='Josh'>
+                    How are you doing?
+                </character>
+            </panel>
+            <panel num='2'>
+                <action>Jon is leaving</action>
+                <character name="Jon">
+                    I got to go man.
+                </character>
+            </panel>
+            <panel num='3'>
+                <action>Josh waves.</action>
+                <character name="Josh">
+                    Bye.
+                </character>
+            </panel>
+        </page>
+        <page num = '2'>
+            <panel num = '1'>
+                <action>
+                    Josh lays down relaxed.
+                </action>
+                <character name="Josh">
+                    Finally get to relax.
+                </character>
+            </panel>
+            <panel num = '2'>
+                <action>
+                    There's a knock on the door.
+                </action>
+                <character name="Josh" mood = "Mad">
+                    Who the hell is that?
+                </character>
+            </panel>
+            <panel num = '3'>
+                <action>Josh answers it and sees his girlfriend.</action>
+                <character name="Josh">
+                    Looks like it just got better.
+                </character>
+            </panel>
+        </page>
+    </script>
+</comic>
