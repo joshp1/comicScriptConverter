@@ -153,11 +153,11 @@ def convert_to_dc(root, output_file):
 
         for page in root.findall("./script/page"):
             page_num = page.get("num")
-            f.write("<h1>INT. COMIC PAGE {}</h1>\n".format(page_num))
+            f.write("Page {}\n".format(page_num))
 
             for panel in page.findall("./panel"):
                 panel_num = panel.get("num")
-                f.write("PANEL {}\n\n".format(panel_num))
+                f.write("_Panel_{}_\n\n".format(panel_num))
 
                 for element in panel:
                     tag_name = element.tag
@@ -165,11 +165,11 @@ def convert_to_dc(root, output_file):
                     
                     if tag_name == "character":
                         name = element.get("name")
-                        f.write("    {}\n   {}\n\n".format(name.upper(), text))
+                        f.write("{}: {}\n\n".format(name.upper(), text))
                     elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
                         f.write("    {}\n".format(text))
                     elif tag_name == "action":
-                        f.write("{}\n".format(text))
+                        f.write("{}\n\n".format(text))
             f.write("\n")
     print ("DC format conversion durn")
 
@@ -216,7 +216,7 @@ def main():
 
     if output_format == "pdf":
         convert_to_pdf(root, output_file)
-    elif output_format == "DC":
+    elif output_format == "dc":
         convert_to_dc(root, output_file)
     elif output_format == "fountain":
         convert_to_fountain(root, output_file)
