@@ -1,4 +1,4 @@
-# Yar har's a blarg
+# Yarg har's a blarg
 8/10-2023:
 cleaned up repository. and added the options.
 you can now run using .ccxmlc -i input.xml -o output.fountain -f fountain
