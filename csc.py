@@ -1,4 +1,4 @@
-import sys, getopt
+import sys, getopt, curses
 import xml.etree.ElementTree as ET
 
 # csc - comic script converter - Python script that converts csxml into fountain or html right now hopefully later more.
@@ -75,6 +75,36 @@ def help():
     print("  -f, --format    Output format (html/fountain)")
     print("  -l, --last_name Last name (optional) I need to erase this. you will never have a need for it. Just a old test left over.")
     print("  -h, --help      Show this help message")
+
+def view(root, parsed_xml):
+    stdscr = curses.initscr()
+    curses.noecho()
+    curses.cbreak()
+    stdscr.keypad(True)
+
+    try:
+        stdscr.addstr("Press any key to view the parsed XML:\n")
+        stdscr.refresh()
+        stdscr.getch()
+
+        stdscr.clear()
+        stdscr.addstr(extract_text(root.find("./title")))
+        stdscr.addstr("Parsed XML:\n\n")
+
+        # Define the maximum length of each chunk
+        chunk_size = 600
+
+        for i in range(0, len(parsed_xml), chunk_size):
+            chunk = parsed_xml[i:i + chunk_size]
+            stdscr.addstr(chunk)
+            stdscr.refresh()
+            stdscr.getch()
+            stdscr.clear()
+
+    finally:
+        curses.endwin()
+
+# ... previous code ...
 def main():
     first_name = None
     last_name = None
@@ -83,8 +113,8 @@ def main():
     output_file = None
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:l:o:hi:", 
-                                   ["help", "format=", "output=", "input="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:l:o:hi:v", 
+                                   ["help", "format=", "output=", "input=", "view"])
     except getopt.GetoptError as e:
         print("Error:", e)
         return
@@ -93,12 +123,21 @@ def main():
         if opt in ("-h", '--help'):
             help ()
             return
+        
         if opt in ('-f', '--format'):
             output_format = arg.lower()
         elif opt in ('-o', '--output'):
             output_file = arg
         elif opt in ('-i', '--input'):
             input_file = arg
+        elif opt in ('-v', '--view'):
+            print (input_file)
+            tree = ET.parse(input_file)  # Parse the XML file
+            root = tree.getroot()  # Get the root element
+
+            parsed_xml = ET.tostring(root, encoding='unicode', method='xml')
+            view(root, parsed_xml)
+            
 
     if input_file is None or output_file is None or output_format is None:
         print("Usage: python script_name.py -i input_file.xml -o output_file -f format (html/fountain)")
