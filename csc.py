@@ -1,10 +1,51 @@
 import sys, getopt, curses
 import xml.etree.ElementTree as ET
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 # csc - comic script converter - Python script that converts csxml into fountain or html right now hopefully later more.
 
 def extract_text(element):
     return element.text.strip() if element is not None and element.text else ""
+
+def convert_to_pdf(root, output_file):
+    doc = SimpleDocTemplate(output_file, pagesize=letter)
+    story = []
+
+    styles = getSampleStyleSheet()
+    title = extract_text(root.find("./title"))
+    story.append(Paragraph(title, styles["Title"]))
+    
+    for page in root.findall("./script/page"):
+        page_num = page.get("num")
+        story.append(Paragraph("PAGE {}".format(page_num), styles["Heading1"]))
+
+        for panel in page.findall("./panel"):
+            panel_num = panel.get("num")
+            story.append(Paragraph("<u>PANEL {}</u>".format(panel_num), styles["Heading3"]))
+
+            for element in panel:
+                tag_name = element.tag
+                text = extract_text(element)
+                
+                if tag_name == "character":
+                    name = element.get("name")
+                    character_style = styles["Heading3"].clone('CharacterStyle', leftIndent=47)
+                    c_style = style = styles["Normal"].clone ('CharacterStyle', leftIndent =33)
+                    story.append(Paragraph(name.upper(), character_style))
+                    story.append(Paragraph(text, c_style))
+                elif tag_name == "narrator":
+                    story.append(Paragraph(text, styles["Italic"]))
+                elif tag_name == "action":
+                    story.append(Paragraph(text, styles["Italic"]))
+
+        story.append(Spacer(12, 12))
+
+    doc.build(story)
+    print("Conversion to PDF complete. Result saved in '{}'".format(output_file))
+
 
 def convert_to_fountain(root, output_file):
     with open(output_file, "w") as f:
@@ -92,7 +133,7 @@ def view(root, parsed_xml):
         stdscr.addstr("Parsed XML:\n\n")
 
         # Define the maximum length of each chunk
-        chunk_size = 600
+        chunk_size = 100
 
         for i in range(0, len(parsed_xml), chunk_size):
             chunk = parsed_xml[i:i + chunk_size]
@@ -146,7 +187,9 @@ def main():
     tree = ET.parse(input_file)
     root = tree.getroot()
 
-    if output_format == "fountain":
+    if output_format == "pdf":
+        convert_to_pdf(root, output_file)
+    elif output_format == "fountain":
         convert_to_fountain(root, output_file)
     elif output_format == "html":
         convert_to_html(root, output_file)
