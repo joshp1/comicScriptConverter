@@ -145,7 +145,34 @@ def view(root, parsed_xml):
     finally:
         curses.endwin()
 
-# ... previous code ...
+def convert_to_dc(root, output_file):
+   # Modify this function to generate HTML output
+    with open(output_file, "w") as f:
+        f.write ("DC format")
+        f.write (extract_text(root.find("./title")) + "\n")
+
+        for page in root.findall("./script/page"):
+            page_num = page.get("num")
+            f.write("<h1>INT. COMIC PAGE {}</h1>\n".format(page_num))
+
+            for panel in page.findall("./panel"):
+                panel_num = panel.get("num")
+                f.write("PANEL {}\n\n".format(panel_num))
+
+                for element in panel:
+                    tag_name = element.tag
+                    text = extract_text(element)
+                    
+                    if tag_name == "character":
+                        name = element.get("name")
+                        f.write("    {}\n   {}\n\n".format(name.upper(), text))
+                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                        f.write("    {}\n".format(text))
+                    elif tag_name == "action":
+                        f.write("{}\n".format(text))
+            f.write("\n")
+    print ("DC format conversion durn")
+
 def main():
     first_name = None
     last_name = None
@@ -189,6 +216,8 @@ def main():
 
     if output_format == "pdf":
         convert_to_pdf(root, output_file)
+    elif output_format == "DC":
+        convert_to_dc(root, output_file)
     elif output_format == "fountain":
         convert_to_fountain(root, output_file)
     elif output_format == "html":
