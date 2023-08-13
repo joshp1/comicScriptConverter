@@ -1,4 +1,7 @@
 import sys, getopt, curses
+from odf.opendocument import OpenDocumentText
+from odf.style import Style, TextProperties
+from odf.text import H,P,Span, LineBreak
 import xml.etree.ElementTree as ET
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -173,6 +176,55 @@ def convert_to_dc(root, output_file):
             f.write("\n")
     print ("DC format conversion durn")
 
+# Output to ODT. I may convert DC output as this also
+def convert_to_odt (root, output_file):
+    textdoc = OpenDocumentText()
+
+    boldst = Style(name="Bold", family="text")
+    boldprop = TextProperties (fontweight = "bold")
+    boldst.addElement(boldprop)
+    textdoc.automaticstyles.addElement(boldst)
+
+    
+    pa=P(text = "ODT output")
+    textdoc.text.addElement (pa)
+    pb=P(text =extract_text(root.find("./title")) + "\n")
+    textdoc.text.addElement (pb)
+
+    for page in root.findall("./script/page"):
+        page_num = page.get("num")
+        p=P(text= "Page {}\n".format(page_num))
+        p.addElement(LineBreak())
+        for panel in page.findall("./panel"):
+            panel_num = panel.get("num")
+            p.addText(u"_Panel_{}_\n\n".format(panel_num))
+            p.addElement(LineBreak())
+
+            # Testing is I can just add a varable and ref that
+            plb = p.addElement(LineBreak())
+
+            for element in panel:
+                tag_name = element.tag
+                text = extract_text(element)
+                 
+                if tag_name == "character":
+                    name = element.get("name")
+                    p.addText(u"{}: {}\n\n".format(name.upper(), text))
+                    p.addElement(LineBreak())
+                elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                    p.addText(u"    {}\n".format(text))
+                    plb
+                elif tag_name == "action":
+                    p.addText (u"{}\n\n".format(text))
+                    p.addElement(LineBreak())
+
+        textdoc.text.addElement(p)
+        p=P()
+        p.addElement(LineBreak())
+        
+    textdoc.save (output_file)
+    print ("ODT format conversion durn")
+
 def main():
     first_name = None
     last_name = None
@@ -216,6 +268,8 @@ def main():
 
     if output_format == "pdf":
         convert_to_pdf(root, output_file)
+    elif output_format == "odt":
+        convert_to_odt(root, output_file)
     elif output_format == "dc":
         convert_to_dc(root, output_file)
     elif output_format == "fountain":
