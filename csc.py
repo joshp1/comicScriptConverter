@@ -1,4 +1,4 @@
-import sys, getopt, curses
+import sys, getopt, curses, docx
 from odf.opendocument import OpenDocumentText
 from odf.style import Style, TextProperties
 from odf.text import H,P,Span, LineBreak
@@ -80,102 +80,6 @@ def convert_to_fountain(root, output_file):
 
     print("Conversion to Fountain complete. Result saved in '{}'".format(output_file))
 
-def convert_to_html(root, output_file):
-    # Modify this function to generate HTML output
-    with open(output_file, "w") as f:
-        f.write ("<html>\n\t<head>\n\t\t</title>\n\t\t\t")
-        f.write (extract_text(root.find("./title")) + "\n")
-        f.write ("\n\t\t</title>\n\t</head>\n\t<body>\n")
-        
-        # Copy the script above to edit later to HTML
-
-        for page in root.findall("./script/page"):
-            page_num = page.get("num")
-            f.write("<h1>INT. COMIC PAGE {}</h1>\n".format(page_num))
-
-            for panel in page.findall("./panel"):
-                panel_num = panel.get("num")
-                f.write("PANEL {}\n\n".format(panel_num))
-
-                for element in panel:
-                    tag_name = element.tag
-                    text = extract_text(element)
-                    
-                    if tag_name == "character":
-                        name = element.get("name")
-                        f.write("    {}\n   {}\n\n".format(name.upper(), text))
-                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
-                        f.write("    {}\n".format(text))
-                    elif tag_name == "action":
-                        f.write("{}\n".format(text))
-            f.write("\n")
-        f.write ("</body></html>")
-    print ("HTML conversion durn")
-def help():
-    print("Usage: python script_name.py [options]")
-    print("Options:")
-    print("  -i, --input     Input XML file")
-    print("  -o, --output    Output file")
-    print("  -f, --format    Output format (html/fountain)")
-    print("  -l, --last_name Last name (optional) I need to erase this. you will never have a need for it. Just a old test left over.")
-    print("  -h, --help      Show this help message")
-
-def view(root, parsed_xml):
-    stdscr = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
-    stdscr.keypad(True)
-
-    try:
-        stdscr.addstr("Press any key to view the parsed XML:\n")
-        stdscr.refresh()
-        stdscr.getch()
-
-        stdscr.clear()
-        stdscr.addstr(extract_text(root.find("./title")))
-        stdscr.addstr("Parsed XML:\n\n")
-
-        # Define the maximum length of each chunk
-        chunk_size = 100
-
-        for i in range(0, len(parsed_xml), chunk_size):
-            chunk = parsed_xml[i:i + chunk_size]
-            stdscr.addstr(chunk)
-            stdscr.refresh()
-            stdscr.getch()
-            stdscr.clear()
-
-    finally:
-        curses.endwin()
-
-def convert_to_dc(root, output_file):
-   # Modify this function to generate HTML output
-    with open(output_file, "w") as f:
-        f.write ("DC format")
-        f.write (extract_text(root.find("./title")) + "\n")
-
-        for page in root.findall("./script/page"):
-            page_num = page.get("num")
-            f.write("Page {}\n".format(page_num))
-
-            for panel in page.findall("./panel"):
-                panel_num = panel.get("num")
-                f.write("_Panel_{}_\n\n".format(panel_num))
-
-                for element in panel:
-                    tag_name = element.tag
-                    text = extract_text(element)
-                    
-                    if tag_name == "character":
-                        name = element.get("name")
-                        f.write("{}: {}\n\n".format(name.upper(), text))
-                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
-                        f.write("    {}\n".format(text))
-                    elif tag_name == "action":
-                        f.write("{}\n\n".format(text))
-            f.write("\n")
-    print ("DC format conversion durn")
-
 # Output to ODT. I may convert DC output as this also
 def convert_to_odt (root, output_file):
     textdoc = OpenDocumentText()
@@ -221,9 +125,146 @@ def convert_to_odt (root, output_file):
         textdoc.text.addElement(p)
         p=P()
         p.addElement(LineBreak())
-        
+
     textdoc.save (output_file)
     print ("ODT format conversion durn")
+
+    # Out put to Microsoft doc format (*.docx)
+
+def convert_to_doc(root, output_file):
+    doc = docx.Document()
+
+    p = doc.add_paragraph()
+    run = p.add_run (extract_text(root.find("./title")) + "\n\n")
+    run.bold = True
+    run.font.name = 'Arial'
+    run.font.size = docx.shared.Pt(24)
+
+    for page in root.findall("./script/page"):
+        page_num = page.get("num")
+        run = p.add_run("Page {}\n\n".format(page_num))
+        run.bold = True
+        run.font.size = docx.shared.Pt (16)
+
+        for panel in page.findall("./panel"):
+            panel_num = panel.get("num")
+            run = p.add_run("Panel {}\n\n".format(panel_num))
+            run.underline = True
+
+            for element in panel:
+                tag_name = element.tag
+                text = extract_text(element)
+
+                if tag_name == "character":
+                    name = element.get("name")
+                    run = p.add_run("{}:".format(name.upper()))
+                    run.bold = True
+
+                    run = p.add_run("{}\n\n".format(text))
+                elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                    run = p.add_run("    {}\n".format(text))
+                elif tag_name == "action":
+                    run = p.add_run("{}\n\n".format(text))
+                    run.italic = True
+        p = doc.add_paragraph()
+    doc.save (output_file)
+    print ("DoC format conversion durn")
+
+def convert_to_html(root, output_file):
+    # Modify this function to generate HTML output
+    with open(output_file, "w") as f:
+        f.write ("<html>\n\t<head>\n\t\t</title>\n\t\t\t")
+        f.write (extract_text(root.find("./title")) + "\n")
+        f.write ("\n\t\t</title>\n\t</head>\n\t<body>\n")
+        
+        # Copy the script above to edit later to HTML
+
+        for page in root.findall("./script/page"):
+            page_num = page.get("num")
+            f.write("<h1>INT. COMIC PAGE {}</h1>\n".format(page_num))
+
+            for panel in page.findall("./panel"):
+                panel_num = panel.get("num")
+                f.write("PANEL {}\n\n".format(panel_num))
+
+                for element in panel:
+                    tag_name = element.tag
+                    text = extract_text(element)
+                    
+                    if tag_name == "character":
+                        name = element.get("name")
+                        f.write("    {}\n   {}\n\n".format(name.upper(), text))
+                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                        f.write("    {}\n".format(text))
+                    elif tag_name == "action":
+                        f.write("{}\n".format(text))
+            f.write("\n")
+        f.write ("</body></html>")
+    print ("HTML conversion durn")
+def convert_to_dc(root, output_file):
+   # Modify this function to generate HTML output
+    with open(output_file, "w") as f:
+        f.write ("DC format")
+        f.write (extract_text(root.find("./title")) + "\n")
+
+        for page in root.findall("./script/page"):
+            page_num = page.get("num")
+            f.write("Page {}\n".format(page_num))
+
+            for panel in page.findall("./panel"):
+                panel_num = panel.get("num")
+                f.write("_Panel_{}_\n\n".format(panel_num))
+
+                for element in panel:
+                    tag_name = element.tag
+                    text = extract_text(element)
+                    
+                    if tag_name == "character":
+                        name = element.get("name")
+                        f.write("{}: {}\n\n".format(name.upper(), text))
+                    elif tag_name == "narrator": # Honestly I'll probably drop the Narrator tag
+                        f.write("    {}\n".format(text))
+                    elif tag_name == "action":
+                        f.write("{}\n\n".format(text))
+            f.write("\n")
+    print ("DC format conversion durn")
+def help():
+    print("Usage: python script_name.py [options]")
+    print("Options:")
+    print("  -i, --input     Input XML file")
+    print("  -o, --output    Output file")
+    print("  -f, --format    Output format (html, fountain, text, ODT, Docx)")
+    print("  -h, --help      Show this help message")
+
+def view(root, parsed_xml):
+    stdscr = curses.initscr()
+    curses.noecho()
+    curses.cbreak()
+    stdscr.keypad(True)
+
+    try:
+        stdscr.addstr("Press any key to view the parsed XML:\n")
+        stdscr.refresh()
+        stdscr.getch()
+
+        stdscr.clear()
+        stdscr.addstr(extract_text(root.find("./title")))
+        stdscr.addstr("Parsed XML:\n\n")
+
+        # Define the maximum length of each chunk
+        chunk_size = 100
+
+        for i in range(0, len(parsed_xml), chunk_size):
+            chunk = parsed_xml[i:i + chunk_size]
+            stdscr.addstr(chunk)
+            stdscr.refresh()
+            stdscr.getch()
+            stdscr.clear()
+
+    finally:
+        curses.endwin()
+
+
 
 def main():
     first_name = None
@@ -260,7 +301,7 @@ def main():
             
 
     if input_file is None or output_file is None or output_format is None:
-        print("Usage: python script_name.py -i input_file.xml -o output_file -f format (html/fountain)")
+        print("Usage: python script_name.py -i input_file.xml -o output_file -f format (HTML, Fountain, txt, ODT, Docx)")
         return
 
     tree = ET.parse(input_file)
@@ -268,9 +309,11 @@ def main():
 
     if output_format == "pdf":
         convert_to_pdf(root, output_file)
+    elif output_format == "doc":
+        convert_to_doc(root, output_file)
     elif output_format == "odt":
         convert_to_odt(root, output_file)
-    elif output_format == "dc":
+    elif output_format == "txt":# Formally dc needs to be a style not format (Styles hopefully to come in version 2)
         convert_to_dc(root, output_file)
     elif output_format == "fountain":
         convert_to_fountain(root, output_file)
