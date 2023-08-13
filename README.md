@@ -18,7 +18,6 @@ I'm sure there are a lot. So if you test it please report it.
 - You have to manually install it.
 
 ## Instructions
-
 If I see people using the app I'll make a tutorial for the scripting language but once I get the DTD made you'll see it's pretty straight forward.
 
 but write the script name it what ever you like.xml
