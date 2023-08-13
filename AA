@@ -1,0 +1,18 @@
+updated blog again
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# interactive rebase in progress; onto 1f9131b
+# Last commands done (4 commands done):
+#    pick 3c4779b Create index.html
+#    pick 5371fbb updated blog again
+# Next commands to do (6 remaining commands):
+#    pick fde81e8 Fixed readme
+#    pick cc373cc Aded exmple fountain for me to reference when fix
+# You are currently rebasing branch 'main' on '1f9131b'.
+#
+# Changes to be committed:
+#	modified:   pages/index.html
+#
+updated index

@@ -38,4 +38,3 @@ If you work on this make a branch and put your edits or what ever in that.Try to
 ## Release notes
 
 - 0.0.1 - I got it functioning. the output don't look pretty but it works.
-
