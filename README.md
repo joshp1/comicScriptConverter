@@ -1,42 +1,40 @@
 # Comic Script Converter
-I'm still in the prototyping stage I just wanted to get the git server up. and accedently made it public. So if you use this. It will change alot and the syntax will be a mess.
+Thank you for using my converter. If you like changing your script formats or have clients that want deferent ones. Like some that want docx others odt ext. You can use the XML Script I came up with then convert it to what ever format needed or you want.
 
-I use fountain to make comic scripts all the time but markdown isn't really my favorite mostly because you have to find a cheat sheet. Markup has the DTD which can also be used to validate the document. (I know it's it's main purporse)
+## Features
+- Export into ODT (Open Document) format
+- Export into Fountain (Markdown) format
+- Export Docx format
+- Export into simple unformated text.
+- View script via terminal
 
-example of use (This is what I want the final named to be)
+## Requirements
+I'm not tested installing thisyear but it's made with python. The libraries I used are Ncurses, ODFpy, python-docx, and reportLab.
 
-csxmlc -f fountain -s script.xml -o script.fountain
+## Known issues
+I'm sure there are a lot. So if you test it please report it.
+- The biggest issue is formating.
+- It needs a makefile to install the script and download libraries
+- You have to manually install it.
 
-for fountain output
+## Instructions
 
-say you want to PDF
+If I see people using the app I'll make a tutorial for the scripting language but once I get the DTD made you'll see it's pretty straight forward.
 
-csxmlc -f pdf -s script.xml -o script.pdf
+but write the script name it what ever you like.xml
 
-It'll then convert to latex which will compile the pdf
+Then say you want it in fountain language
 
-Also figure the out put may be redundant so just the output format may be enough
+`csxmlc -i script_file.xml -o script_file.fountain -f fountain`
 
-example:
+in the directory it was ran. you'll have a script_file.fountain file.
 
-csxml -f fountain -i script.xml
+## About
+I have a move between formats a lot when making my comics. So instead of having to rewrite everything I made a XML script that I'll write the script in. then export it to what ever I feel like that time.
 
-output:
+## Guidelines
+If you work on this make a branch and put your edits or what ever in that.Try to keep the code as clean as possible and leave plenty comments.
 
-script.fountainS
+## Release notes
 
-8/10-2023:
-cleaned up repository. and added the options.
-you can now run using .ccxmlc -i input.xml -o output.fountain -f fountain
-also --help or -h for a help menu.
-Still need to clean this up and stop using it as a long. I'll b getting to the point where I should of went public.
-
-8/11SS-2023:
-I'm tsting if this changes the pages script if so I have a idea. fdfasdf
-## TODO
-
- - [x] Rewrite the files to have better names
- - [ ] Add git milestones for versioning.
- - [ ] Rewrite the README  to look more professional.
- - [x] mycomicmarkuplanguage.xml needs a shorter named and context cleaned up.
- - [ ] ccxmlc needs to be renamed to csxmlc
+- 0.0.1 - I got it functioning. the output don't look pretty but it works.
