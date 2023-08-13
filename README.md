@@ -9,7 +9,7 @@ Thank you for using my converter. If you like changing your script formats or ha
 - View script via terminal
 
 ## Requirements
-I'm not tested installing thisyear but it's made with python. The libraries I used are Ncurses, ODFpy, python-docx, and reportLab.
+I'm not tested installing this yet but it's made with python. The libraries I used are Ncurses, ODFpy, python-docx, and reportLab.
 
 ## Known issues
 I'm sure there are a lot. So if you test it please report it.
